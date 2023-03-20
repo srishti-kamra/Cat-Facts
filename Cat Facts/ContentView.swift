@@ -46,7 +46,9 @@ struct ContentView: View {
                           dismissButton: .default(Text("OK")))
                 }
             }
-            
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.yellow)
+                        .opacity(0.5)
         }
  
     }
