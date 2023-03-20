@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Cat Facts
 //
-//  Created by Srishti Kamra  on 3/20/23.
+//
 //
 
 import SwiftUI
@@ -14,7 +14,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
           
-            NavigationLink ("click here")
+            NavigationLink ("CLICK HERE")
             {
             
                 VStack{
