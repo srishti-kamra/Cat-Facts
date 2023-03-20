@@ -7,20 +7,72 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
+    @State private var showingAlert = false
+    @State private var facts = [String]()
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+          
+            NavigationLink ("click here")
+            {
+            
+                VStack{
+                    Text("Cat Facts")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    
+                    List(facts, id: \.self) { fact in
+                        Text(fact)
+                    }
+                    .navigationTitle("Enjoy")
+                    .toolbar {
+                        
+                        Button(action: {
+                            Task {
+                                await loadData()
+                            }
+                        }, label: {
+                            Image(systemName: "arrow.clockwise")
+                        })
+                    }
+                }
+                .task {
+                    await loadData()
+                }
+                .alert(isPresented: $showingAlert) {
+                    Alert(title: Text("Loading Error"),
+                          message: Text("There is a problem loading the API categories"),
+                          dismissButton: .default(Text("OK")))
+                }
+            }
+            
         }
-        .padding()
+ 
+    }
+    
+    func loadData() async {
+        if let url = URL(string:"https://meowfacts.herokuapp.com/?count=20") {
+            if let (data, _) = try? await URLSession.shared.data(from: url) {
+                if let decodedResponse = try? JSONDecoder().decode(Facts.self, from: data) {
+                    facts = decodedResponse.facts
+                }
+            }
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct Facts: Identifiable, Codable {
+    var id = UUID()
+    var facts: [String]
+    
+    enum CodingKeys: String, CodingKey {
+        case facts = "data"
     }
 }
